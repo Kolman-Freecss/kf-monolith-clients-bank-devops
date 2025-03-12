@@ -36,12 +36,11 @@ jenkins:
     system:
       domainCredentials:
         - credentials:
-            - usernamePassword:
+            - string:
                 scope: GLOBAL
                 id: "docker-registry-credentials"
-                username: ${DOCKER_REGISTRY_USER}
-                password: ${DOCKER_REGISTRY_PASSWORD}
-                description: "Docker Registry Credentials"
+                secret: ${DOCKER_REGISTRY_TOKEN}
+                description: "Docker Registry Token"
             - usernamePassword:
                 scope: GLOBAL
                 id: "github-credentials"

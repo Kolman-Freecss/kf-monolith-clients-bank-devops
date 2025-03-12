@@ -26,8 +26,10 @@ This project contains the CI/CD configuration for the KF Monolith Clients Bank p
 .
 ├── docker-compose.yml      # Docker Compose configuration
 ├── jenkins.Dockerfile      # Custom Jenkins Dockerfile
+├── jenkins.yaml           # Jenkins Configuration as Code
 ├── Jenkinsfile            # CI/CD Pipeline
 ├── plugins.txt            # Jenkins plugins list
+├── .env.example          # Example environment variables
 └── README.md             # This file
 ```
 
@@ -40,30 +42,43 @@ git clone https://github.com/your-username/kf-monolith-clients-bank-devops.git
 cd kf-monolith-clients-bank-devops
 ```
 
-### 2. Configure Environment Variables
+### 2. Configure Access Tokens and Credentials
 
-Copy the example environment file and configure your variables:
+1. Copy the example environment file:
+   ```bash
+   cp .env.example .env
+   ```
 
-```bash
-cp .env.example .env
-```
+2. Configure the `.env` file with your credentials:
 
-Edit the `.env` file with your settings:
+   ```env
+   # Jenkins Admin Credentials
+   JENKINS_ADMIN_USER=admin
+   JENKINS_ADMIN_PASSWORD=your-secure-password
 
-```env
-# Jenkins Admin Credentials
-JENKINS_ADMIN_USER=admin
-JENKINS_ADMIN_PASSWORD=your-secure-password
+   # Docker Registry Configuration
+   DOCKER_REGISTRY=docker.io
+   DOCKER_REGISTRY_TOKEN=your-docker-personal-access-token  # Get this from Docker Hub
 
-# Docker Registry Configuration
-DOCKER_REGISTRY=your-docker-registry.com
-DOCKER_REGISTRY_USER=your-docker-username
-DOCKER_REGISTRY_PASSWORD=your-docker-password
+   # GitHub Configuration
+   GITHUB_USER=your-github-username
+   GITHUB_TOKEN=your-github-token  # Generate this in GitHub Settings
+   ```
 
-# GitHub Configuration
-GITHUB_USER=your-github-username
-GITHUB_TOKEN=your-github-token
-```
+   #### How to Get the Required Tokens:
+
+   **Docker Hub Token:**
+   1. Log in to [Docker Hub](https://hub.docker.com)
+   2. Go to Account Settings > Security
+   3. Click "New Access Token"
+   4. Give it a description (e.g., "Jenkins CI/CD")
+   5. Copy the generated token and paste it in `.env`
+
+   **GitHub Token:**
+   1. Go to [GitHub Settings](https://github.com/settings/tokens)
+   2. Generate a new token (classic)
+   3. Select scopes: `repo`, `read:packages`
+   4. Copy the generated token and paste it in `.env`
 
 ### 3. Configure Jenkins Pipeline
 
@@ -71,7 +86,9 @@ The pipeline will be automatically configured when Jenkins starts up using Jenki
 
 - Creation of the pipeline job
 - Configuration of GitHub integration
-- Setup of required credentials
+- Setup of required credentials:
+  - Docker Registry token for image pushing
+  - GitHub credentials for repository access
 - Configuration of security settings
 
 You can modify the pipeline configuration by editing the `jenkins.yaml` file.
@@ -92,18 +109,20 @@ Jenkins will be available at: http://localhost:8080/jenkins
 
 1. Navigate to http://localhost:8080/jenkins
 2. Initial setup wizard is disabled by configuration
-3. Use the credentials you configured in the setup step
+3. Use the credentials you configured in the `.env` file
 
-### Jenkins Credentials Setup
+### Credentials Management
 
-1. Go to "Manage Jenkins" > "Manage Credentials"
-2. Add credentials with ID: `docker-registry-credentials`
-   - Kind: Username with password
-   - Scope: Global
-   - Username: Your Docker registry username
-   - Password: Your Docker registry password
-   - ID: docker-registry-credentials
-   - Description: Docker Registry Credentials
+All credentials are automatically configured through Jenkins Configuration as Code:
+
+1. **Docker Registry Access**
+   - Configured using Docker Hub Personal Access Token
+   - No username required, token provides authentication
+   - Used for pushing/pulling Docker images
+
+2. **GitHub Access**
+   - Configured using GitHub Personal Access Token
+   - Used for repository access and webhooks
 
 ## 🔄 Jenkins Pipeline
 
@@ -181,8 +200,11 @@ Essential plugins installed:
 ## 🔐 Security
 
 - Sensitive credentials should be stored in Jenkins Credentials
-- The `.env` file should never be committed to the repository
-- Use secrets for production environment
+- The `.env` file is automatically ignored by git (listed in .gitignore)
+- Use Personal Access Tokens instead of passwords when possible
+- All tokens should have minimal required permissions:
+  - Docker token: only for push/pull access
+  - GitHub token: only repo and package access
 
 ## 📝 Additional Notes
 
@@ -190,3 +212,4 @@ Essential plugins installed:
 - Artifacts are preserved for 5 successful builds
 - Logs are rotated every 10 builds
 - Global timeout of 1 hour to prevent infinite builds
+- Docker authentication uses Personal Access Token for enhanced security
