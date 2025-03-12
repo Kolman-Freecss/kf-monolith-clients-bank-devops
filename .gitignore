@@ -1,0 +1,33 @@
+# Environment variables
+.env
+
+# Jenkins data
+jenkins_home/
+
+# IDE files
+.idea/
+.vscode/
+*.iml
+*.iws
+*.ipr
+
+# Logs
+*.log
+
+# Build directories
+target/
+build/
+dist/
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Docker volumes
+docker/volumes/
+
+# Temporary files
+*.tmp
+*.temp
+*.swp
+*~ 

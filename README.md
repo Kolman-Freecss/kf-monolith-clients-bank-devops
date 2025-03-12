@@ -42,15 +42,41 @@ cd kf-monolith-clients-bank-devops
 
 ### 2. Configure Environment Variables
 
-Create a `.env` file in the project root (optional):
+Copy the example environment file and configure your variables:
 
-```env
-DOCKER_REGISTRY=your-docker-registry.com
-JENKINS_ADMIN_USER=admin
-JENKINS_ADMIN_PASSWORD=your-secure-password
+```bash
+cp .env.example .env
 ```
 
-### 3. Start Jenkins
+Edit the `.env` file with your settings:
+
+```env
+# Jenkins Admin Credentials
+JENKINS_ADMIN_USER=admin
+JENKINS_ADMIN_PASSWORD=your-secure-password
+
+# Docker Registry Configuration
+DOCKER_REGISTRY=your-docker-registry.com
+DOCKER_REGISTRY_USER=your-docker-username
+DOCKER_REGISTRY_PASSWORD=your-docker-password
+
+# GitHub Configuration
+GITHUB_USER=your-github-username
+GITHUB_TOKEN=your-github-token
+```
+
+### 3. Configure Jenkins Pipeline
+
+The pipeline will be automatically configured when Jenkins starts up using Jenkins Configuration as Code (JCasC). The configuration includes:
+
+- Creation of the pipeline job
+- Configuration of GitHub integration
+- Setup of required credentials
+- Configuration of security settings
+
+You can modify the pipeline configuration by editing the `jenkins.yaml` file.
+
+### 4. Start Jenkins
 
 ```bash
 docker-compose up -d
