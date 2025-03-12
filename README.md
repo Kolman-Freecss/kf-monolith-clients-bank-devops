@@ -56,13 +56,15 @@ JENKINS_ADMIN_PASSWORD=your-secure-password
 docker-compose up -d
 ```
 
-Jenkins will be available at: http://localhost:8080
+Jenkins will be available at: http://localhost:8080/jenkins
+
+> **Important**: Note that Jenkins is configured with a `/jenkins` context path. Always use http://localhost:8080/jenkins to access the Jenkins interface.
 
 ## 💻 Usage
 
 ### Jenkins Access
 
-1. Navigate to http://localhost:8080
+1. Navigate to http://localhost:8080/jenkins
 2. Initial setup wizard is disabled by configuration
 3. Use the credentials you configured in the setup step
 
@@ -118,29 +120,34 @@ environment {
 
 ### Included Jenkins Plugins
 
+Essential plugins installed:
 - Pipeline and GitHub Integration
-- Docker Pipeline
+- Docker Pipeline and Docker Build Step
 - Credentials Binding
-- JUnit and JaCoCo
-- Blue Ocean
-- And more (see plugins.txt)
+- Pipeline Stage View
+- Pipeline Utility Steps
+- Timestamper
 
 ## ⚠️ Troubleshooting
 
 ### Common Issues
 
-1. **Docker Permissions Error**
+1. **Cannot Access Jenkins**
+   - Make sure you're using the correct URL: http://localhost:8080/jenkins
+   - Check if the container is running: `docker-compose ps`
+
+2. **Docker Permissions Error**
    ```bash
    sudo usermod -aG docker jenkins
    sudo systemctl restart jenkins
    ```
 
-2. **Jenkins Cannot Access Docker Socket**
+3. **Jenkins Cannot Access Docker Socket**
    ```bash
    chmod 666 /var/run/docker.sock
    ```
 
-3. **Maven Wrapper Issues**
+4. **Maven Wrapper Issues**
    ```bash
    chmod +x mvnw
    ```
