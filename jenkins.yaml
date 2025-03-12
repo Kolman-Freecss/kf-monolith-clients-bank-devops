@@ -10,28 +10,7 @@ jenkins:
     loggedInUsersCanDoAnything:
       allowAnonymousRead: false
 
-  jobs:
-    - script: >
-        pipelineJob('kf-monolith-clients-bank') {
-          definition {
-            cpsScm {
-              scm {
-                git {
-                  remote {
-                    url('https://github.com/your-username/kf-monolith-clients-bank.git')
-                    credentials('github-credentials')
-                  }
-                  branch('*/main')
-                }
-              }
-              scriptPath('Jenkinsfile')
-            }
-          }
-          triggers {
-            githubPush()
-          }
-        }
-
+unclassified:
   credentials:
     system:
       domainCredentials:
@@ -47,3 +26,25 @@ jenkins:
                 username: ${GITHUB_USER}
                 password: ${GITHUB_TOKEN}
                 description: "GitHub Credentials"
+
+jobs:
+  - script: >
+      pipelineJob('kf-monolith-clients-bank') {
+        definition {
+          cpsScm {
+            scm {
+              git {
+                remote {
+                  url('https://github.com/your-username/kf-monolith-clients-bank.git')
+                  credentials('github-credentials')
+                }
+                branch('*/main')
+              }
+            }
+            scriptPath('Jenkinsfile')
+          }
+        }
+        triggers {
+          githubPush()
+        }
+      }
